@@ -1,13 +1,11 @@
 public class Lot {
     private int id;
     private String nameToy;
-    private int quantity;
     private int chanceOfDrop;
 
-    public Lot(int id, String nameToy, int quantity, int chanceOfDrop){
+    public Lot(int id, String nameToy, int chanceOfDrop){
         this.id = id;
         this.nameToy = nameToy;
-        this.quantity = quantity;
         this.chanceOfDrop = chanceOfDrop;
     }
 
@@ -23,12 +21,6 @@ public class Lot {
         return chanceOfDrop;
     }
 
-    public int getQuantity() {return quantity;}
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public void setNameToy(String nameToy) {
         this.nameToy = nameToy;
     }
@@ -39,6 +31,6 @@ public class Lot {
 
     @Override
     public String toString() {
-        return "Лот № " + id +  " название " + nameToy + ", в количестве " + quantity + " шт., вероятность выпадения " + chanceOfDrop + " %";
+        return "Лот № " + id +  " название " + nameToy + ", вероятность выпадения " + chanceOfDrop + " %";
     }
 }

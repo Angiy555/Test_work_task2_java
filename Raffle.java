@@ -5,108 +5,103 @@ import java.util.*;
 public class Raffle {
     Random random = new Random();
     private String[] arrayOfToys = {"Мишка", "Чебурашка", "Ракета", "Кукла", "Конструктор", "Вертолет", "Танк", "Лото", "Зайчик", "Собачка"};
-    int quantity = 1;
-    String fileName = "Raffled_Lots.txt";
+    final String fileName = "Raffled_Lots.txt";
+    private ArrayList<Lot> listRaffalLots = new ArrayList<>();
+    private ArrayList<Lot> listLots = new ArrayList<>();
 
     public Raffle(){}
 
-    public void createLot(ArrayList<Lot> listLots){
+    public void createLot(){
         Lot newLot;
         int chanceOfDrop = random.nextInt(100);
-        int maxId = maxId(listLots);
+        int maxId = maxId();
 
-        System.out.print("Введите название игрушки: ");
-        String nameToy = Main.readConsole();
+        ConsoleInputOutput.messageEnteringNameOfToy();
+        String nameToy = ConsoleInputOutput.readConsole();
 
-        newLot = new Lot(maxId, nameToy, quantity, chanceOfDrop);
+        newLot = new Lot(maxId, nameToy, chanceOfDrop);
         listLots.add(newLot);
+        ConsoleInputOutput.messageLotAdded();
     }
 
-    public void createListOfLotteryLots(ArrayList<Lot> listLots){
-        int maxId = maxId(listLots);
+    public void createListOfLotteryLots(){
+        int maxId = maxId();
         int chanceOfDrop = 0;
         for(int i = 0; i < arrayOfToys.length; i++){
             chanceOfDrop = random.nextInt(100);
-            Lot newLot = new Lot(maxId + i, arrayOfToys[i], quantity, chanceOfDrop);
+            Lot newLot = new Lot(maxId + i, arrayOfToys[i], chanceOfDrop);
             listLots.add(newLot);
         }
+        ConsoleInputOutput.messageDataAdded();
     }
 
-    public  void changeParametersLot(ArrayList<Lot> listLots){
-        System.out.print("Перечень лотов участвующих в розыгрыше.");
-        System.out.println(" ");
+    public  void changeParametersLot(){
+        if(listLots.isEmpty()){
+            ConsoleInputOutput.messageListOfLotsIsEmpty();
+            ConsoleInputOutput.messagePressEnter();
+            return;
+        }
         viewingListOfLots(listLots);
-        System.out.println(" ");
-        System.out.print("Введите номер лота для изменения: ");
-        String numberLot = Main.readConsole();
-        boolean isNumericRange = isInputOfDigitInRangeLotId(listLots, numberLot);
+        ConsoleInputOutput.messageEnterLotNumber();
+        String numberLot = ConsoleInputOutput.readConsole();
+        boolean isNumericRange = isInputOfDigitInRangeLotId(numberLot);
 
         if(isNumericRange){
             int lotId = Integer.parseInt(numberLot);
-            int indexChange = indexSearch(listLots, lotId);
+            int indexChange = indexSearch(lotId);
             boolean shouldExit = false;
             while (!shouldExit) {
-                View.showMenuChangeLot();
-                System.out.print("Введите операцию от 1 до 2 или 0 для выхода: ");
-                String itemMenuString = Main.readConsole();
+                ConsoleInputOutput.showMenuChangeLot();
+                ConsoleInputOutput.messageMenuItemSelection();
+                String itemMenuString = ConsoleInputOutput.readConsole();
                 switch (itemMenuString) {
                     case "0":
                         shouldExit = true;
                         break;
                     case "1":
-                        changeNameToy(listLots, indexChange);
-                        System.out.print("Название игрушки изменено, для продолжения нажмите ENTER");
-                        Main.readConsole();
+                        changeNameToy(indexChange);
+                        ConsoleInputOutput.messageNameToyChanged();
                         break;
                     case "2":
-                        changeChanceOfDrop(listLots, indexChange);
-                        System.out.print("Данные добавлены, для продолжения нажмите ENTER");
-                        Main.readConsole();
+                        changeChanceOfDrop(indexChange);
+                        ConsoleInputOutput.messageDataAdded();
                         break;
                     default:
-                        System.out.println("");
-                        System.out.print("Введен неверный пункт.");
-                        System.out.println("");
-                        System.out.print("Нажмите ENTER для продолжения");
-                        Main.readConsole();
+                        ConsoleInputOutput.messageInvalidMenuItem();
                         break;
                 }
             }
+            ConsoleInputOutput.messageDataChanged();
         }else {
-            System.out.print("Введен неверный номер лота. Нажмите ENTER для продолжения.");
-            Main.readConsole();
+            ConsoleInputOutput.messageInvalidLotNumber();
         }
 
     }
 
-    public int maxId(ArrayList<Lot> listLotse){
-        int maxId = 1;
-        if(listLotse.isEmpty()){
-            return maxId;
-        }else{
-            for(Lot item : listLotse ){
-                if(item.getId() > maxId){
-                    maxId = item.getId();
-                }
+    public int maxId(){
+        int maxId = 0;
+
+        for(Lot item : listLots ){
+            if(item.getId() > maxId){
+                maxId = item.getId();
             }
-            return maxId + 1;
         }
+
+        return maxId + 1;
     }
 
-    public int indexSearch(ArrayList<Lot> listLots, int numberLot){
+    public int indexSearch(int numberLot){
         int index = 0;
-        int count = 0;
         for(Lot item: listLots){
             if(item.getId() == numberLot){
-                index = count;
+                index = listLots.indexOf(item);
                 break;
             }
-            count++;
         }
-        return  index;
+        return index;
     }
 
-    public boolean isInputOfDigitInRangeLotId(ArrayList<Lot> listLots, String numberLot){
+    public boolean isInputOfDigitInRangeLotId(String numberLot){
         if(!numberLot.matches("-?\\d+")) return false;
         int number = Integer.parseInt(numberLot);
         for(Lot item: listLots){
@@ -126,22 +121,21 @@ public class Raffle {
         return false;
     }
 
-    public void changeNameToy(ArrayList<Lot> listLots, int indexChange){
-        System.out.print("Введите новое название игрушки: ");
-        String nameToy = Main.readConsole();
+    public void changeNameToy(int indexChange){
+        ConsoleInputOutput.messageEnterNewNameToy();
+        String nameToy = ConsoleInputOutput.readConsole();
         listLots.get(indexChange).setNameToy(nameToy);
     }
 
-    public  void  changeChanceOfDrop(ArrayList<Lot> listLots, int indexChange){
-        System.out.print("Введите новое значение шанса выпадения игрушки: ");
-        String chanceOfDropString = Main.readConsole();
+    public  void  changeChanceOfDrop(int indexChange){
+        ConsoleInputOutput.messageEnterNewChanceValue();
+        String chanceOfDropString = ConsoleInputOutput.readConsole();
         boolean isNumericRange = isInputOfDigitInRangeChanceOfDrop(chanceOfDropString);
         if(isNumericRange){
             int chanceOfDropInt = Integer.parseInt(chanceOfDropString);
             listLots.get(indexChange).setChanceOfDrop(chanceOfDropInt);
         }else {
-            System.out.print("Введен неверный предел вероятности. Нажмите ENTER для продолжения.");
-            Main.readConsole();
+            ConsoleInputOutput.messageEnterIncorrectProbabilityLimit();
         }
 
     }
@@ -152,7 +146,18 @@ public class Raffle {
         }
     }
 
-    public void lotLottery(ArrayList<Lot> listLots){
+    public  void openLots(){
+        if(listLots.isEmpty()){
+            ConsoleInputOutput.messageListOfLotsIsEmpty();
+            ConsoleInputOutput.messagePressEnter();
+        }else{
+            ConsoleInputOutput.messageListOfLots();
+            viewingListOfLots(listLots);
+            ConsoleInputOutput.messagePressEnter();
+        }
+    }
+
+    public void lotLottery(){
         Lot raffalLot;
         Queue<Lot> lotsPriorityQueue = new PriorityQueue<>(new Comparator<Lot>() {
             @Override
@@ -165,32 +170,35 @@ public class Raffle {
             lotsPriorityQueue.add(item);
         }
         raffalLot = lotsPriorityQueue.poll();
-        int indexRemove = indexSearch(listLots,raffalLot.getId());
+        int indexRemove = indexSearch(raffalLot.getId());
         listLots.remove(indexRemove);
-        Main.listRaffalLots.add(raffalLot);
+        listRaffalLots.add(raffalLot);
         System.out.println("Разыгран:");
         System.out.println(raffalLot);
 
         saveRaffledLotToFile(raffalLot);
 
-        System.out.print("Нажмите ENTER для продолжения.");
-        Main.readConsole();
+        ConsoleInputOutput.messagePressEnter();
     }
 
     public void saveRaffledLotToFile(Lot raffalLot){
         try(FileWriter fw = new FileWriter(fileName, true))
         {
             fw.write(raffalLot.toString() + "\n");
-            System.out.println("Лот записан в файл");
+            ConsoleInputOutput.messageLotWriteToFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void openRaffledLots(){
-        System.out.println("Разыгранные лоты:");
-        viewingListOfLots(Main.listRaffalLots);
-        System.out.print("Нажмите ENTER для продолжения.");
-        Main.readConsole();
+        if(listRaffalLots.isEmpty()){
+            ConsoleInputOutput.messageListOfLotsIsEmpty();
+            ConsoleInputOutput.messagePressEnter();
+        }else{
+            ConsoleInputOutput.messageRaffledLots();
+            viewingListOfLots(listRaffalLots);
+            ConsoleInputOutput.messagePressEnter();
+        }
     }
 }
