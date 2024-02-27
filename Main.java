@@ -2,11 +2,11 @@ public class Main {
     public static void main(String[] args) {
         boolean shouldExit = false;
         Raffle raffle = new Raffle();
+        String[] arrayOfToys = {"Мишка", "Чебурашка", "Ракета", "Кукла", "Конструктор", "Вертолет", "Танк", "Лото", "Зайчик", "Собачка"};
 
         while (!shouldExit) {
             ConsoleInputOutput.showMenu();
-            ConsoleInputOutput.messageMenuItemSelection();
-            String itemMenuString = ConsoleInputOutput.readConsole();
+            String itemMenuString = ConsoleInputOutput.getMenuItemSelection();
 
             switch (itemMenuString) {
                 case "0":
@@ -16,7 +16,7 @@ public class Main {
                     raffle.createLot();
                     break;
                 case "2":
-                    raffle.createListOfLotteryLots();
+                    raffle.createListOfLotteryLots(arrayOfToys);
                     break;
                 case "3":
                     raffle.changeParametersLot();

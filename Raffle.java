@@ -4,7 +4,6 @@ import java.util.*;
 
 public class Raffle {
     Random random = new Random();
-    private String[] arrayOfToys = {"Мишка", "Чебурашка", "Ракета", "Кукла", "Конструктор", "Вертолет", "Танк", "Лото", "Зайчик", "Собачка"};
     final String fileName = "Raffled_Lots.txt";
     private ArrayList<Lot> listRaffalLots = new ArrayList<>();
     private ArrayList<Lot> listLots = new ArrayList<>();
@@ -15,16 +14,14 @@ public class Raffle {
         Lot newLot;
         int chanceOfDrop = random.nextInt(100);
         int maxId = maxId();
-
-        ConsoleInputOutput.messageEnteringNameOfToy();
-        String nameToy = ConsoleInputOutput.readConsole();
+        String nameToy = ConsoleInputOutput.getNameOfToy();
 
         newLot = new Lot(maxId, nameToy, chanceOfDrop);
         listLots.add(newLot);
         ConsoleInputOutput.messageLotAdded();
     }
 
-    public void createListOfLotteryLots(){
+    public void createListOfLotteryLots(String[] arrayOfToys){
         int maxId = maxId();
         int chanceOfDrop = 0;
         for(int i = 0; i < arrayOfToys.length; i++){
@@ -42,8 +39,7 @@ public class Raffle {
             return;
         }
         viewingListOfLots(listLots);
-        ConsoleInputOutput.messageEnterLotNumber();
-        String numberLot = ConsoleInputOutput.readConsole();
+        String numberLot = ConsoleInputOutput.getLotNumber();
         boolean isNumericRange = isInputOfDigitInRangeLotId(numberLot);
 
         if(isNumericRange){
@@ -52,8 +48,7 @@ public class Raffle {
             boolean shouldExit = false;
             while (!shouldExit) {
                 ConsoleInputOutput.showMenuChangeLot();
-                ConsoleInputOutput.messageMenuItemSelection();
-                String itemMenuString = ConsoleInputOutput.readConsole();
+                String itemMenuString = ConsoleInputOutput.getMenuItemSelection();
                 switch (itemMenuString) {
                     case "0":
                         shouldExit = true;
@@ -122,14 +117,12 @@ public class Raffle {
     }
 
     public void changeNameToy(int indexChange){
-        ConsoleInputOutput.messageEnterNewNameToy();
-        String nameToy = ConsoleInputOutput.readConsole();
+        String nameToy = ConsoleInputOutput.getNewNameToy();
         listLots.get(indexChange).setNameToy(nameToy);
     }
 
     public  void  changeChanceOfDrop(int indexChange){
-        ConsoleInputOutput.messageEnterNewChanceValue();
-        String chanceOfDropString = ConsoleInputOutput.readConsole();
+        String chanceOfDropString = ConsoleInputOutput.getNewChanceValue();
         boolean isNumericRange = isInputOfDigitInRangeChanceOfDrop(chanceOfDropString);
         if(isNumericRange){
             int chanceOfDropInt = Integer.parseInt(chanceOfDropString);
@@ -142,7 +135,7 @@ public class Raffle {
 
     public  void viewingListOfLots(ArrayList<Lot> listLots){
         for(Lot item: listLots){
-            System.out.println(item);
+            ConsoleInputOutput.outputLot(item);
         }
     }
 
@@ -173,8 +166,8 @@ public class Raffle {
         int indexRemove = indexSearch(raffalLot.getId());
         listLots.remove(indexRemove);
         listRaffalLots.add(raffalLot);
-        System.out.println("Разыгран:");
-        System.out.println(raffalLot);
+        ConsoleInputOutput.messageRaffleLot();
+        ConsoleInputOutput.outputLot(raffalLot);
 
         saveRaffledLotToFile(raffalLot);
 

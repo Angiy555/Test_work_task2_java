@@ -43,21 +43,25 @@ public class ConsoleInputOutput {
         System.out.println("============================================================");
     }
 
-    public static void messageEnteringNameOfToy(){
+    public static String getNameOfToy(){
         System.out.print("Введите название игрушки: ");
+        return readConsole();
     }
 
-    public static void messageEnterLotNumber(){
+    public static String getLotNumber(){
         System.out.println(" ");
         System.out.print("Введите номер лота для изменения: ");
+        return readConsole();
     }
 
-    public static void messageEnterNewNameToy(){
+    public static String getNewNameToy(){
         System.out.print("Введите новое название игрушки: ");
+        return readConsole();
     }
 
-    public static void messageEnterNewChanceValue(){
+    public static String getNewChanceValue(){
         System.out.print("Введите новое значение шанса выпадения игрушки: ");
+        return readConsole();
     }
 
     public static void messageEnterIncorrectProbabilityLimit(){
@@ -99,8 +103,9 @@ public class ConsoleInputOutput {
         readConsole();
     }
 
-    public static void messageMenuItemSelection(){
+    public static String getMenuItemSelection(){
         System.out.print("Введите пункт меню: ");
+        return readConsole();
     }
 
     public static void messageNameToyChanged(){
@@ -123,5 +128,13 @@ public class ConsoleInputOutput {
 
     public static void messageRaffledLots(){
         System.out.println("Разыгранные лоты:");
+    }
+
+    public static void messageRaffleLot(){
+        System.out.println("Разыгран:");
+    }
+
+    public static void outputLot(Lot lot){
+        System.out.println(lot);
     }
 }
